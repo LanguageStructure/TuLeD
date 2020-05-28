@@ -148,7 +148,7 @@ def add_meta_data(session):
                              jsondata={
                                  'license_icon': 'cc-by-sa.png',
                                  'license_name': 'Creative Commons Attribution-ShareAlike 4.0 International License'},
-                             contact='fabricio.gerardi@uni-tuebingen.de',
+                             contact='team@tuled.org',
                              domain='xyz.org')
     session.add(dataset)
 
