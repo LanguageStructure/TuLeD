@@ -21,7 +21,7 @@
                 <p>
 
             Ferraz Gerardi, F., Reichert, S., Blaschke, V., DeMattos, E., Gao, Z., Manolescu, M., 
-       and Wu, N. (2020) Tupían lexical database. DOI 10.6084/m9.figshare.12283868 ${h.cite_button(request, ctx)}
+       and Wu, N. (2020) TuLeD: Tupían Lexical Database. Version 0.8. Tübingen: Eberhard-Karls University DOI 10.6084/m9.figshare.12283868 ${h.cite_button(request, ctx)}
         </p>  
     </div>
 
