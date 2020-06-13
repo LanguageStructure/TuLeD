@@ -22,11 +22,9 @@
                     </a>
                     
               </div>
-                     
-                   
-                    
-             
-              
+
+ 
+                                                                                      
 <div class="span4" style="text-align: center;">
       <% license_icon = h.format_license_icon_url(request) %>
                             % if license_icon:
@@ -46,6 +44,7 @@
                            and is licensed under a
                             <a rel="license" href="${request.dataset.license}">${request.dataset.jsondata.get('license_name', request.dataset.license)}  </a>.
    
+   
                                                      
  </div>
  
@@ -55,6 +54,14 @@
 			</a>
 		            </div>
               
+              <div class="span3" style="text-align: right";>
+                    <a href="https://github.com/LanguageStructure/TuLeD"
+                          title="University of Tübingen">
+                           <img width="100" src="${request.static_url('tuled:static/GitHub_Logo.png')}" />
+                            
+                    </a>
+                    
+              </div>
                             
 </%block>
 
