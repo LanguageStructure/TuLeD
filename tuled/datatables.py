@@ -97,20 +97,20 @@ class SemanticClassCol(Col):
         super().__init__(*args, **kwargs)
 
 
-# class ConcepticonCol(Col):
-#     """
-#     Custom column to present the concepticon_name column of the concepts table
-#     as a link to the respective concept in the Concepticon.
-#     """
-#
-#     __kw__ = {'sTitle': 'Concepticon'}
-#
-#     def format(self, concept):
-#         if concept.concepticon_id:
-#             href = 'http://concepticon.clld.org/parameters/{}'.format(concept.concepticon_id)
-#             return external_link(href, concept.concepticon_name)
-#         else:
-#             return ''
+class ConcepticonCol(Col):
+     """
+     Custom column to present the concepticon_name column of the concepts table
+     as a link to the respective concept in the Concepticon.
+     """
+
+     __kw__ = {'sTitle': 'Concepticon'}
+
+     def format(self, concept):
+         if concept.concepticon_class:
+             href = 'http://concepticon.clld.org/parameters/{}'.format(concept.concepticon_class)
+             return external_link(href, concept.concepticon_class)
+         else:
+             return ''
 
 
 class ConceptLinkCol(LinkCol):
@@ -168,8 +168,8 @@ class ConceptsDataTable(datatables.Parameters):
             IntegerIdCol(self, 'id'),
             LinkCol(self, 'name'),
             PortugueseCol(self, 'portuguese', model_col=Concept.portuguese),
-            SemanticClassCol(self, 'semantic_class', model_col=Concept.semantic_class)
-        ]
+            SemanticClassCol(self, 'semantic_class', model_col=Concept.semantic_class),
+            ConcepticonCol(self, 'concepticon_class', model_col=Concept.concepticon_class)]
 
 
 class WordsDataTable(datatables.Values):

@@ -44,6 +44,7 @@ class Concept(CustomModelMixin, Parameter):
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
     portuguese = Column(Unicode)
     semantic_class = Column(Unicode)
+    concepticon_class = Column(Unicode)
 
 
 @implementer(interfaces.IValueSet)
