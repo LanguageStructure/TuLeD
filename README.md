@@ -1,5 +1,6 @@
-![TuLeD](mapNimu2.png)
 # Tupían Lexical Database
+![TuLeD](mapNimu2.png)
+
 
 ## Installation and deployment
 
