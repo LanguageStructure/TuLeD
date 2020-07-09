@@ -3,8 +3,8 @@ Xipaya	Juruna	xiy	xiy	xipa1240	-49.948	-4.133
 Juruna	Juruna	jur	jur	juru1256	-53.3472	-10.9354
 Karo (Arara)	Ramarana-Purubora	arr	arr	karo1305	-61.5691	-10.3342
 Puruborá	Ramarana-Purubora	pur	pur	puru1264	-62.4358	-11.4226
-Ntogapíd (Itogapúk) †	Ramarana-Purubora	##?	nto	???	-61.66003	-10.452133
-Ramarama †	Ramarana-Purubora	#??	rm	???	-63	-10.4
+Ntogapíd (Itogapúk) †	Ramarana-Purubora	##?	nto	????	-61.66003	-10.452133
+Ramarama †	Ramarana-Purubora	#??	rm	????	-63	-10.4
 Makurap	Tuparí	mpu	mpu	maku1278	-64.3201	-11.8701
 Wayoró	Tuparí	wyr	wyr	wayo1238	-61.3064	-12.6945
 Tuparí	Tuparí	tpr	tpr	tupa1250	-62.2544	-11.8884
@@ -16,9 +16,9 @@ Cinta-Larga	Mondé	cin	cin	cint1239	-60.8312	-10.5879
 Gavião (Ikólóéhj)	Mondé	gvo	gvo-gaviao	gavi1246	-61.6752	-10.7235
 Mondé	Mondé	mnd	mnd	sala1273	-61.25	-12.0499
 Aruá	Mondé	arx	arx	arua1261	-62.44	-12.12
-Aruáshi	Mondé	arx	arx-arua	?????	-62.5	-12.5
+Aruáshi	Mondé	arx	arx-arua	????	-62.5	-12.5
 Matanau †	Mondé	?##	mat	????	-60.682	-5.336
-Kabanae †	Mondé	?#?	kbn	?????	-60.462	-5.199
+Kabanae †	Mondé	?#?	kbn	????	-60.462	-5.199
 Zoró	Mondé	gvo	gvo-zoro	gavi1246	-61.6752	-10.7235
 Suruí-Paiter	Mondé	sru	sru	suru1262	-61.2818	-11.0989
 Karitiana	Arikem	ktn	ktn	kari1311	-64.1522	-9.37937
@@ -34,14 +34,14 @@ Guajajara	Tupí-Guaraní	gub	gub	guaj1255	-45.7081	-4.69461
 Apiaká	Tupí-Guaraní	api	api	apia1248	-57.91	-7.84711
 Parintintin	Tupí-Guaraní	pah	pah	tenh1241	-61.936	-7.92626
 Amondawa	Tupí-Guaraní	adw	adw	amun1246	-62.3064	-9.04023
-Tenharim	Tupí-Guaraní	xyz	xyz	??????	-61.8972	-8.32882
-Jiahoi	Tupí-Guaraní	???	???	diah1239	-62.27	-8.04
+Tenharim	Tupí-Guaraní	xyz	xyz	????	-61.8972	-8.32882
+Jiahoi	Tupí-Guaraní	???	dia	diah1239	-62.27	-8.04
 Juma	Tupí-Guaraní	jua	jua	juma1249	-64.1	-7.28
 Urueuwauwau	Tupí-Guaraní	urz	urz	urue1240	-63.8086	-10.9176
-Tupi do Machado (Wirafed) †	Tupí-Guaraní	###	wir	?????	-61.358125	-12.523397
+Tupi do Machado (Wirafed) †	Tupí-Guaraní	###	wir	????	-61.358125	-12.523397
 Kayabí	Tupí-Guaraní	kyz	kyz	kaya1329	-55.5479	-11.2747
 Araweté	Tupí-Guaraní	awt	awt	araw1273	-52.5001	-4.90246
-Anambé of Ehrenreich †	Tupí-Guaraní	??#	??#	anam1251	-50.5	-4.5
+Anambé of Ehrenreich †	Tupí-Guaraní	??#	ane	anam1251	-50.5	-4.5
 Guajá	Tupí-Guaraní	gvj	gvj	guaj1256	-46.3683	-3.93574
 Amanaye †	Tupí-Guaraní	ama	ama	aman1266	-48.66	-3.8
 Emerillon (Tekó)	Tupí-Guaraní	eme	eme	emer1243	-52.3699	3.23694
@@ -64,12 +64,12 @@ Chiriguano	Tupí-Guaraní	gui	gui	east2555	-63.37	-20.42
 Jorá	Tupí-Guaraní	jor	jor	jora1240	-63.21	-15.75
 Mbyá	Tupí-Guaraní	gun	gun	mbya1239	-52.711	-26.0188
 Guarani Paraguay	Tupí-Guaraní	gug	gug	para1311	-57.08816	-25.60551
-Old Guaraní †	Tupí-Guaraní	#??	#??	???????	-54.29	-26.25
+Old Guaraní †	Tupí-Guaraní	#??	olg	????	-54.29	-26.25
 Guayaki (Aché)	Tupí-Guaraní	guq	guq	ache1246	-56.4697	-25.5865
 Xetá	Tupí-Guaraní	xet	xet	xeta1241	-52.2266	-24.9408
 Kaiowá	Tupí-Guaraní	kgk	kgk	kaiw1246	-54.6815	-24.589
 Tapiete	Tupí-Guaraní	tpj	tpj	tapi1253	-62.684	-21.4169
 Chiripá (Ñandeva / Avá-Guarani)	Tupí-Guaraní	nhd	nhd	chir1286	-55.05	-25.65
-Apapokuva of Nimuendajú †	Tupí-Guaraní	?#?	?#?	????	-54.4528	-23.7325
+Apapokuva of Nimuendajú †	Tupí-Guaraní	?#?	apa	????	-54.4528	-23.7325
 Omagua	nonTupían	omg	omg	omag1248	-69.17	-3.53
 Cocama-Cocamilla	nonTupían	cod	cod	coca1259	-74	-4.5
