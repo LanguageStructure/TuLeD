@@ -33,6 +33,8 @@
 
 <h2>Welcome to TuLeD (version 0.8)</h2>
 
+<p> <img src="/static/mapNimu2.png" alt=""> </p>
+
 <!--
 <p class="lead">
     Abstract.
@@ -44,7 +46,7 @@
     The data is presented in a unified encoding to be used in historical and computational linguistics working on language evolution and language contact. </p>
 
   <p>  
-    The current release version (0.8) includes 381 concepts across 74 languages, living and extinct, with a coverage ranging up to 99%.
+    The current release version (0.8) includes 390 concepts across 74 languages, living and extinct, with a coverage ranging up to 99%.
     </p>
     
         
