@@ -73,7 +73,7 @@ class ConceptDataset:
         strict = True
 
     Concept = collections.namedtuple('Concept', ['id', 'name', 'portuguese',
-                                                 'semantic_class', 'concepticon'])
+                                                 'semantic_class', 'concepticon', 'eol'])
 
     def __init__(self, dataset_fp):
         """
@@ -89,7 +89,7 @@ class ConceptDataset:
             reader = csv.DictReader(f, dialect=self.ConceptDatasetDialect)
             for line in reader:
                 yield self.Concept('', line['Name'],
-                                   line['Portuguese'], line['Semantic'], line['Concepticon'])
+                                   line['Portuguese'], line['Semantic'], line['Concepticon'], line['Eol'])
 
 
 class MainDataset:
@@ -198,7 +198,7 @@ def add_concepts(concepts_dataset, session):
     for index, concept in enumerate(concepts_dataset.gen_concepts(), 1):
         d[concept.name] = Concept(id=index, name=concept.name,
                                   portuguese=concept.portuguese,
-                                  semantic_class=concept.semantic_class,concepticon_class=concept.concepticon)
+                                  semantic_class=concept.semantic_class,concepticon_class=concept.concepticon, eol=concept.eol)
         session.add(d[concept.name])
 
     session.flush()
