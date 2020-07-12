@@ -45,6 +45,7 @@ class Concept(CustomModelMixin, Parameter):
     portuguese = Column(Unicode)
     semantic_class = Column(Unicode)
     concepticon_class = Column(Unicode)
+    eol = Column(Unicode)
 
 
 @implementer(interfaces.IValueSet)
