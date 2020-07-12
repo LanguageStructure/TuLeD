@@ -18,6 +18,13 @@ class EnglishCol(Col):
     __kw__ = {'sTitle': 'English'}
 
 
+class EolCol(Col):
+    """
+    Copied from IsoCodeCol
+    """
+    __kw__ = {'sTitle': 'Eol'}
+
+
 class PortugueseCol(Col):
     """
     Copied from IsoCodeCol
@@ -169,7 +176,8 @@ class ConceptsDataTable(datatables.Parameters):
             LinkCol(self, 'name'),
             PortugueseCol(self, 'portuguese', model_col=Concept.portuguese),
             SemanticClassCol(self, 'semantic_class', model_col=Concept.semantic_class),
-            ConcepticonCol(self, 'concepticon_class', model_col=Concept.concepticon_class)]
+            ConcepticonCol(self, 'concepticon_class', model_col=Concept.concepticon_class),
+            EolCol(self, 'eol', model_col=Concept.eol)]
 
 
 class WordsDataTable(datatables.Values):
