@@ -17,14 +17,15 @@ def main(raw_data, language_data, concept_data, main_data):
         portuguese = [x.strip().upper() for x in raw_file.readline().split('\t')][7::3]
         english = [x.strip().upper() for x in raw_file.readline().split('\t')][7::3]
         concepticon = [x.strip().upper() for x in raw_file.readline().split('\t')][7::3]
+        eol = [x.strip().upper() for x in raw_file.readline().split('\t')][7::3]
 
         # write headers
-        concept_file.write('Name\tPortuguese\tSemantic\tConcepticon\n')
+        concept_file.write('Name\tPortuguese\tSemantic\tConcepticon\tEol\n')
         lang_file.write('Language\tSub-Family\tISO_Code\tLanguage_ID\tGlottolog\tLongitude\tLatitude\n')
         main_file.write('Language\tConcept\tPortuguese\tForm\tSemantic\tConcepticon\tCognate\tNotes\n')
 
-        for e, p, s, c in zip(english, portuguese, semantic, concepticon):
-            concept_file.write(f'{e}\t{p}\t{s}\t{c}\n')
+        for e, p, s, c, u in zip(english, portuguese, semantic, concepticon, eol):
+            concept_file.write(f'{e}\t{p}\t{s}\t{c}\t{u}\n')
 
         for line in raw_file.readlines():
             # the current align_matrix.tsv is missing one Notes column at the end(rightmost), so it is added here manually.
