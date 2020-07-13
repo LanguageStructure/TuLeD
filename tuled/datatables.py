@@ -24,6 +24,13 @@ class EolCol(Col):
     """
     __kw__ = {'sTitle': 'Eol'}
 
+    def format(self, concept):
+         if concept.eol:
+             href = 'https://eol.org/pages/{}'.format(concept.eol)
+             return external_link(href, concept.eol)
+         else:
+             return ''
+
 
 class PortugueseCol(Col):
     """
