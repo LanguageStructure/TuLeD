@@ -1,18 +1,8 @@
 <%inherit file="../home_comp.mako"/>
 
+
 <%def name="sidebar()">
-    <div class="well">
 
-        <p>
-            The data is being collected by Fabrício Ferraz Gerardi and Stanislav Reichert.
-        </p>
-
-        <p>
-            For the source code of the web application, refer to the
-            <a href="https://clld.org="clld project">clld framework</a>.
-        </p>
-
-    </div>
 
 
     <div class="well">
@@ -27,7 +17,20 @@
              </p>  
     </div>
 
+    <div class="well">
 
+
+
+        <p>
+            The data is being collected by Fabrício Ferraz Gerardi and Stanislav Reichert.
+        </p>
+
+        <p>
+            For the source code of the web application, refer to the
+            <a href="https://clld.org="clld project">clld framework</a>.
+        </p>
+
+    </div>
 
 </%def>
 
