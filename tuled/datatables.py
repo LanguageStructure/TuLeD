@@ -2,8 +2,10 @@ from clld.db.meta import DBSession
 from clld.web.datatables.base import Col, IntegerIdCol, LinkToMapCol, LinkCol
 from clld.web.util.helpers import external_link, link, map_marker_img
 from clld.web.util.htmllib import HTML
+from sqlalchemy.orm import joinedload
 from clld.web import datatables
-
+from clld.web.datatables.base import LinkCol, Col, LinkToMapCol
+from tuled import models
 from tuled.models import Concept, Doculect, Word
 
 """
@@ -99,14 +101,14 @@ class SubfamilyCol(Col):
         return HTML.div(map_marker_img(self.dt.req, doculect), ' ', doculect.subfamily)
 
 
-class SemanticClassCol(Col):
+class SemanticFieldCol(Col):
     """
     Copied from SubfamilyCol
     """
 
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = sorted([
-            x[0] for x in DBSession.query(Concept.semantic_class).distinct()])
+            x[0] for x in DBSession.query(Concept.semantic_field).distinct()])
 
         super().__init__(*args, **kwargs)
 
@@ -182,7 +184,7 @@ class ConceptsDataTable(datatables.Parameters):
             IntegerIdCol(self, 'id'),
             LinkCol(self, 'name'),
             PortugueseCol(self, 'portuguese', model_col=Concept.portuguese),
-            SemanticClassCol(self, 'semantic_class', model_col=Concept.semantic_class),
+            SemanticFieldCol(self, 'semantic_field', model_col=Concept.semantic_field),
             ConcepticonCol(self, 'concepticon_class', model_col=Concept.concepticon_class),
             EolCol(self, 'eol', model_col=Concept.eol)]
 
@@ -206,8 +208,12 @@ class WordsDataTable(datatables.Values):
 
         res.extend([
             Col(self, 'form', model_col=Word.name, sTitle='Orthographic form'),
-            Col(self, 'cognate', model_col=Word.cognate_class, sTitle='Cognate Class'),
-            Col(self, 'notes', model_col= Word.notes, sTitle='Notes')])
+            Col(self, 'tokens', model_col=Word.tokens, sTitle='Tokens'),
+            Col(self, 'simple_cognate', model_col=Word.simple_cognate, sTitle='Simple Cognate'),
+            Col(self, 'partial_cognate', model_col=Word.partial_cognate, sTitle='Partial Cognate'),
+            Col(self, 'notes', model_col= Word.notes, sTitle='Notes'),
+            Col(self, 'morphemes', model_col=Word.morphemes, sTitle='Morphemes')]
+        )
 
         return res
 
@@ -221,6 +227,7 @@ class SourcesDataTable(datatables.Sources):
 """
 Hooks
 """
+
 
 def includeme(config):
     """

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-31 22:35+0200\n"
-"PO-Revision-Date: 2020-03-31 22:35+0200\n"
+"POT-Creation-Date: 2020-09-12 15:00+0200\n"
+"PO-Revision-Date: 2020-09-12 15:00+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: tuled/__init__.py:10
+#: tuled/__init__.py:21
 msgid "Parameter"
-msgstr "Concept"
+msgstr ""
 
-#: tuled/__init__.py:11
+#: tuled/__init__.py:22
 msgid "Parameters"
-msgstr "Concepts"
+msgstr ""
 

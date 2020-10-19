@@ -1,21 +1,37 @@
-*/__pycache__/*
+development.ini
+*.py[cod]
+*.komodoproject
+
+# C extensions
+*.so
+
+# Packages
 *.egg
 *.egg-info
-db.sqlite
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib64
+__pycache__
 
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Mr Developer
+.mr.developer.cfg
 .project
 .pydevproject
+
+# pycharm
 .idea
-
-.pytest_cache/
-.cache
-
-/meta/*
-/.eggs/*
-
-*.pyc
-*.swp
-
-/data/
-
-/venv/

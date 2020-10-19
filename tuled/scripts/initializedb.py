@@ -1,11 +1,15 @@
-from __future__ import unicode_literals
-import sys, os, csv, collections
-
-from clld.scripts.util import initializedb, Data, bibtex2source
+import sys
+import csv
+import itertools
+import collections
+import pathlib
+from pycldf import Sources
+from clldutils.misc import nfilter
+from clldutils.color import qualitative_colors
+from clld.cliutil import Data, bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clld.lib import bibtex
-
 import tuled
 from tuled import models
 from tuled.models import Doculect, Synset, Word, Concept
@@ -73,7 +77,7 @@ class ConceptDataset:
         strict = True
 
     Concept = collections.namedtuple('Concept', ['id', 'name', 'portuguese',
-                                                 'semantic_class'])
+                                                 'semantic_class', 'concepticon', 'eol'])
 
     def __init__(self, dataset_fp):
         """
@@ -89,7 +93,7 @@ class ConceptDataset:
             reader = csv.DictReader(f, dialect=self.ConceptDatasetDialect)
             for line in reader:
                 yield self.Concept('', line['Name'],
-                                   line['Portuguese'], line['Semantic'])
+                                   line['Portuguese'], line['Semantic'], line['Concepticon'], line['Eol'])
 
 
 class MainDataset:
@@ -108,7 +112,7 @@ class MainDataset:
 
     Word = collections.namedtuple('Word', ['language', 'concept', 'form',
                                            'portuguese', 'semantic',
-                                           'cognate', 'notes'])
+                                           'simple_cognate', 'partial_cognate', 'tokens', 'morphemes', 'notes'])
 
     def __init__(self, dataset_fp):
         """
@@ -125,7 +129,9 @@ class MainDataset:
             for line in reader:
                 yield self.Word(line['Language'], line['Concept'],
                                 line['Form'], line['Portuguese'],
-                                line['Semantic'], line['Cognate'], line['Notes'])
+                                line['Semantic'], line['SimpleCognate'],
+                                line['PartialCognate'], line['Tokens'],
+                                line['Morphemes'], line['Notes'])
 
 
 """
@@ -140,23 +146,35 @@ def add_meta_data(session):
     Helper for the main function that keeps the meta data in one place for
     easier reference and editing.
     """
-    dataset = common.Dataset(id='tuled', name='TuLeD',
-                             description='Tupían Lexical Database',
-                             publisher_name='Seminar für Sprachwissenschaft at the University of Tübingen',
-                             publisher_place='Tübingen',
-                             license='https://creativecommons.org/licenses/by-sa/4.0/',
-                             jsondata={
-                                 'license_icon': 'cc-by-sa.png',
-                                 'license_name': 'Creative Commons Attribution-ShareAlike 4.0 International License'},
-                             contact='team@tuled.org',
-                             domain='xyz.org')
-    session.add(dataset)
+
+    dataset = common.Dataset(
+        id=tuled.__name__,
+        domain="tuled.org",
+        name="TuLeD",
+        description="Tupían Lexical Database",
+        publisher_name="Seminar für Sprachwissenschaft at the University of Tübingen",
+        publisher_place="Tübingen",
+        license='https://creativecommons.org/licenses/by-sa/4.0/',
+        contact="team@tuled.org",
+        jsondata={
+            'license_icon': 'cc-by-sa.png',
+            'license_name': 'Creative Commons Attribution-ShareAlike 4.0 International License'},
+    )
 
     dataset.editors.append(common.Editor(
         contributor=common.Contributor(id='fgerardi', name='Fabrício Ferraz Gerardi')))
     dataset.editors.append(common.Editor(
         contributor=common.Contributor(id='sreichert', name='Stanislav Reichert')))
 
+    session.add(dataset)
+
+
+def iteritems(cldf, t, *cols):
+    cmap = {cldf[t, col].name: col for col in cols}
+    for item in cldf[t]:
+        for k, v in cmap.items():
+            item[v] = item[k]
+        yield item
 
 def add_sources(sources_file_path, session):
     """
@@ -198,7 +216,9 @@ def add_concepts(concepts_dataset, session):
     for index, concept in enumerate(concepts_dataset.gen_concepts(), 1):
         d[concept.name] = Concept(id=index, name=concept.name,
                                   portuguese=concept.portuguese,
-                                  semantic_class=concept.semantic_class)
+                                  semantic_field=concept.semantic_class,
+                                  concepticon_class=concept.concepticon,
+                                  eol=concept.eol)
         session.add(d[concept.name])
 
     session.flush()
@@ -243,16 +263,34 @@ def add_doculects(lang_dataset, session, sources={}):
 
 
 def main(args):
-    """
-    Populates the database. Expects: (1) the db to be empty; (2) the main_data,
-    lang_data, concept_data, and sources_data args to be present in the given
-    argparse.Namespace instance.
-    This function is called within a db transaction, the latter being handled
-    by initializedb.
-    """
-    main_dataset = MainDataset(args.main_data)
 
+    data = Data()
+    """
+    data.add(
+        common.Dataset,
+        tuled.__name__,
+        id=tuled.__name__,
+        domain='',
+
+        publisher_name="Tübingen University",
+        publisher_place="Tübingen",
+        publisher_url="",
+        license="http://creativecommons.org/licenses/by/4.0/",
+        jsondata={
+            'license_icon': 'cc-by.png',
+            'license_name': 'Creative Commons Attribution 4.0 International License'},
+
+    )
+    """
     add_meta_data(DBSession)
+
+    data_dir = pathlib.Path(tuled.__file__).parent.parent / 'data'
+    args.main_data = input('main data [{}]: '.format(data_dir / 'main.tsv')) or str(data_dir / 'main.tsv')
+    args.sources_data = input('sources data [{}]: '.format(data_dir / 'sources.bib')) or str(data_dir / 'sources.bib')
+    args.concept_data = input('concept data [{}]: '.format(data_dir / 'concepts.tsv')) or str(data_dir / 'concepts.tsv')
+    args.lang_data = input('lang data [{}]: '.format(data_dir / 'languages.tsv')) or str(data_dir / 'languages.tsv')
+
+    main_dataset = MainDataset(args.main_data)
 
     sources = add_sources(args.sources_data, DBSession)
     concepts = add_concepts(ConceptDataset(args.concept_data), DBSession)
@@ -270,42 +308,26 @@ def main(args):
         if last_synset is None \
                 or last_synset.language != doculects[word.language] \
                 or last_synset.parameter != concepts[word.concept]:
-            last_synset = Synset(id=f'{word.language}-{word.concept}',
+            last_synset = Synset(id=f'{word.language}-{word.concept}-{word.form}',
                                  language=doculects[word.language],
                                  parameter=concepts[word.concept])
             DBSession.add(last_synset)
 
-        if not (word.form or word.cognate):  # empty notes?
+        if not (word.form or word.simple_cognate):  # empty notes?
             continue
 
         DBSession.add(Word(id=f'{word.language}-{word.concept}-{word.form}-{word.portuguese}',
                            valueset=last_synset,
                            name=word.form,
-                           cognate_class=word.cognate,
-                           notes = word.notes))
+                           tokens=word.tokens,
+                           simple_cognate=word.simple_cognate,
+                           notes=word.notes,
+                           morphemes=word.morphemes,
+                           partial_cognate=word.partial_cognate)
+                           )
 
-
-"""
-The clld.scripts.util.initializedb func is a wrapper around the main func, but
-it uses its own argparse.ArgumentParser instance. Thus, there are two ways to
-avoid hardcoding the paths to the datasets: (1) init an
-ArgumentParser instance here and fake some sys.argv input to the initializedb's
-instance so that initializedb does not break; (2) add new arguments to
-initializedb's instance in the undocumented and weird way that seems to have
-been provided for such cases. The latter option is implemented.
-"""
-if __name__ == '__main__':
-
-    if os.path.exists('db.sqlite'):
-        os.remove('db.sqlite')
-
-    main_data_arg = [('main_data',), {
-        'help': 'path to the tsv file that contains the TuLeD data'}]
-    lang_data_arg = [('lang_data',), {
-        'help': 'path to the tsv file that contains the language data'}]
-    concept_data_arg = [('concept_data',), {
-        'help': 'path to the tsv file that contains the concept data'}]
-    sources_data_arg = [('sources_data',), {
-        'help': 'path to the bibtex file that contains the references'}]
-
-    initializedb(main_data_arg, lang_data_arg, concept_data_arg, sources_data_arg, create=main)
+def prime_cache(args):
+    """If data needs to be denormalized for lookup, do that here.
+    This procedure should be separate from the db initialization, because
+    it will have to be run periodically whenever data has been updated.
+    """

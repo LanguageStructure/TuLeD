@@ -43,7 +43,7 @@ class Concept(CustomModelMixin, Parameter):
     """
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
     portuguese = Column(Unicode)
-    semantic_class = Column(Unicode)
+    semantic_field = Column(Unicode)
     concepticon_class = Column(Unicode)
     eol = Column(Unicode)
 
@@ -62,5 +62,8 @@ class Word(CustomModelMixin, Value):
     Relevant fields inherited from Value: id, name, valueset.
     """
     pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
-    cognate_class = Column(Integer)
+    simple_cognate = Column(Integer)
+    partial_cognate = Column(Integer)
     notes = Column(Unicode)
+    morphemes = Column(Unicode)
+    tokens = Column(Unicode)

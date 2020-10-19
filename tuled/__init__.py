@@ -1,8 +1,12 @@
+import collections
 from clld.interfaces import IMapMarker
 from clld.web.icon import ICON_MAP, SHAPES
+
 from pyramid.config import Configurator
 
-# Has to be imported, even if it is seemingly unused:
+from clld.interfaces import IMapMarker, IValueSet, IValue, IDomainElement
+from clldutils.svg import pie, icon, data_url
+
 # we must make sure custom models are known at database initialization!
 from tuled import models
 from tuled.models import Doculect
@@ -68,12 +72,12 @@ def get_map_marker(item, req):
 
     return ICON_MAP[shape + color].url(req)
 
-
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings)
     config.include('clld.web.app')
     config.registry.registerUtility(get_map_marker, IMapMarker)
+    config.include('clldmpg')
 
     return config.make_wsgi_app()

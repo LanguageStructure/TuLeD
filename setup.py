@@ -19,13 +19,17 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'clld',
-    ],
-    extras_require={
+        'clld',  # >=7.0
+
+
+        'clldmpg',
+
+],
+extras_require={
         'dev': ['flake8', 'waitress'],
         'test': [
             'mock',
-            'pytest>=3.1',
+            'pytest>=5.4',
             'pytest-clld',
             'pytest-mock',
             'pytest-cov',
