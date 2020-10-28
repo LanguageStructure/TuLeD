@@ -1,0 +1,51 @@
+import itertools
+import collections
+
+from pycldf import Sources
+from clldutils.misc import nfilter
+from clldutils.color import qualitative_colors
+from clld.cliutil import Data, bibtex2source
+from clld.db.meta import DBSession
+from clld.db.models import common
+from clld.lib import bibtex
+
+
+import tuled
+from tuled import models
+
+
+def iteritems(cldf, t, *cols):
+    cmap = {cldf[t, col].name: col for col in cols}
+    for item in cldf[t]:
+        for k, v in cmap.items():
+            item[v] = item[k]
+        yield item
+
+
+def main(args):
+
+    data = Data()
+    data.add(
+        common.Dataset,
+        tuled.__name__,
+        id=tuled.__name__,
+        domain='',
+
+        publisher_name="Max Planck Institute for the Science of Human History",
+        publisher_place="Jena",
+        publisher_url="http://www.shh.mpg.de",
+        license="http://creativecommons.org/licenses/by/4.0/",
+        jsondata={
+            'license_icon': 'cc-by.png',
+            'license_name': 'Creative Commons Attribution 4.0 International License'},
+
+    )
+
+
+
+
+def prime_cache(args):
+    """If data needs to be denormalized for lookup, do that here.
+    This procedure should be separate from the db initialization, because
+    it will have to be run periodically whenever data has been updated.
+    """

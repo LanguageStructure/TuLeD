@@ -76,7 +76,7 @@
     The data is presented in a unified encoding to be used in historical and computational linguistics working on language evolution and language contact. </p>
 
   <p>  
-    The current release version (0.9) includes 411 concepts across 76 languages, living and extinct, with a coverage ranging up to <a href="static/Completeness.html"> 97% </a> .
+    The current release version (0.9) includes 412 concepts across 76 languages, living and extinct, with a coverage ranging up to <a href="static/Completeness.html"> 97% </a> .
     </p>
     
   
