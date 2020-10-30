@@ -48,14 +48,6 @@ class Concept(CustomModelMixin, Parameter):
     eol = Column(Unicode)
 
 
-@implementer(interfaces.IValueSet)
-class Synset(CustomModelMixin, ValueSet):
-    """
-    Relevant fields inherited from ValueSet: language, parameter.
-    """
-    pk = Column(Integer, ForeignKey('valueset.pk'), primary_key=True)
-
-
 @implementer(interfaces.IValue)
 class Word(CustomModelMixin, Value):
     """
