@@ -29,7 +29,7 @@ ssh -vvv USER@SERVER -p PORT
 ```
 cd www
 pip3 install --upgrade pip setuptools
-pip3 install clld==6.0.1
+pip3 install clld
 pip3 install -e .
 ```
 - Deploy the website (for the first time or after file updates) via:
