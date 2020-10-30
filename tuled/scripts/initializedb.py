@@ -1,142 +1,20 @@
 import sys
-import csv
 import itertools
-import collections
-import pathlib
-from pycldf import Sources
-from clldutils.misc import nfilter
-from clldutils.color import qualitative_colors
+
+from clldutils.misc import slug
 from clld.cliutil import Data, bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
+from clld.db.util import compute_language_sources
 from clld.lib import bibtex
 import tuled
-from tuled import models
-from tuled.models import Doculect, Synset, Word, Concept
+
+from tuled.models import Doculect, Word, Concept
+
 
 if sys.version_info < (3, 6, 0):
     sys.stderr.write('Python 3.6 or above is required.')
     exit(1)
-
-
-"""
-Dataset classes
-"""
-
-
-class LangDataset:
-    """
-    Handles reading the TuLeD language data dataset.
-    """
-
-    class LangDatasetDialect(csv.Dialect):
-        """
-        Describes the tsv dialect used for the language data file.
-        """
-        delimiter = '\t'
-        lineterminator = '\r\n'
-        quoting = csv.QUOTE_NONE
-        strict = True
-
-    Language = collections.namedtuple('Language', ['name', 'subfamily',
-                                                   'iso_code', 'id',
-                                                   'glotto_code',
-                                                   'longitude', 'latitude'])
-
-    def __init__(self, dataset_fp):
-        """
-        Constructor.
-        """
-        self.dataset_fp = dataset_fp
-
-    def gen_langs(self):
-        """
-        Yields a Language named tuple at a time.
-        """
-        with open(self.dataset_fp, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f, dialect=self.LangDatasetDialect)
-            for row in reader:
-                yield self.Language(row['Language'], row['Sub-Family'],
-                                    row['ISO_Code'], row['Language_ID'],
-                                    row['Glottolog'], row['Longitude'],
-                                    row['Latitude'])
-
-
-class ConceptDataset:
-    """
-    Handles reading the TuLeD concept dataset.
-    """
-
-    class ConceptDatasetDialect(csv.Dialect):
-        """
-        Describes the tsv dialect used for the concepts data file.
-        """
-        delimiter = '\t'
-        lineterminator = '\r\n'
-        quoting = csv.QUOTE_NONE
-        strict = True
-
-    Concept = collections.namedtuple('Concept', ['id', 'name', 'portuguese',
-                                                 'semantic_class', 'concepticon', 'eol'])
-
-    def __init__(self, dataset_fp):
-        """
-        Constructor.
-        """
-        self.dataset_fp = dataset_fp
-
-    def gen_concepts(self):
-        """
-        Yields a Concept named tuple at a time.
-        """
-        with open(self.dataset_fp, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f, dialect=self.ConceptDatasetDialect)
-            for line in reader:
-                yield self.Concept('', line['Name'],
-                                   line['Portuguese'], line['Semantic'], line['Concepticon'], line['Eol'])
-
-
-class MainDataset:
-    """
-    Handles reading the main TuLeD dataset.
-    """
-
-    class MainDatasetDialect(csv.Dialect):
-        """
-        Describes the tsv dialect used for the dataset file.
-        """
-        delimiter = '\t'
-        lineterminator = '\r\n'
-        quoting = csv.QUOTE_NONE
-        strict = True
-
-    Word = collections.namedtuple('Word', ['language', 'concept', 'form',
-                                           'portuguese', 'semantic',
-                                           'simple_cognate', 'partial_cognate', 'tokens', 'morphemes', 'notes'])
-
-    def __init__(self, dataset_fp):
-        """
-        Constructor.
-        """
-        self.dataset_fp = dataset_fp
-
-    def gen_words(self):
-        """
-        Yields a Word named tuple at a time.
-        """
-        with open(self.dataset_fp, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f, dialect=self.MainDatasetDialect)
-            for line in reader:
-                yield self.Word(line['Language'], line['Concept'],
-                                line['Form'], line['Portuguese'],
-                                line['Semantic'], line['SimpleCognate'],
-                                line['PartialCognate'], line['Tokens'],
-                                line['Morphemes'], line['Notes'])
-
-
-"""
-Database-populating functions
-"""
 
 
 def add_meta_data(session):
@@ -169,13 +47,6 @@ def add_meta_data(session):
     session.add(dataset)
 
 
-def iteritems(cldf, t, *cols):
-    cmap = {cldf[t, col].name: col for col in cols}
-    for item in cldf[t]:
-        for k, v in cmap.items():
-            item[v] = item[k]
-        yield item
-
 def add_sources(sources_file_path, session):
     """
     Creates and adds to the given SQLAlchemy session the common.Source model
@@ -185,149 +56,81 @@ def add_sources(sources_file_path, session):
     being the keys.
     Helper for the main function.
     """
-    d = {}
-
     bibtex_db = bibtex.Database.from_file(sources_file_path, encoding='utf-8')
-    seen = set()
-
     for record in bibtex_db:
-
-        if record.id in seen:
-            continue
-
-        d[record.id] = bibtex2source(record)
-        session.add(d[record.id])
-        seen.add(record.id)
-
+        session.add(bibtex2source(record))
     session.flush()
-
-    return d
-
-
-def add_concepts(concepts_dataset, session):
-    """
-    Creates and adds to the given SQLAlchemy session the Concept instances
-    harvested from the given ConceptDataset instance. Returns a dict of the
-    added model instances with the concept IDs being the keys.
-    Helper for the main function.
-    """
-    d = {}
-
-    for index, concept in enumerate(concepts_dataset.gen_concepts(), 1):
-        d[concept.name] = Concept(id=index, name=concept.name,
-                                  portuguese=concept.portuguese,
-                                  semantic_field=concept.semantic_class,
-                                  concepticon_class=concept.concepticon,
-                                  eol=concept.eol)
-        session.add(d[concept.name])
-
-    session.flush()
-
-    return d
-
-
-def add_doculects(lang_dataset, session, sources={}):
-    """
-    Creates and adds to the given SQLAlchemy session the Doculect instances
-    harvested from the given LangDataset instance. Returns a dict of the added
-    model instances with the respective ISO codes being the keys.
-    The optional arg should contain common.Source instances with the keys being
-    strings starting with the ISO code of the language that the source is for.
-    Helper for the main function.
-    """
-    d = {}
-
-    for lang in lang_dataset.gen_langs():
-
-        if not (lang.name and lang.subfamily and lang.iso_code and
-                lang.glotto_code and lang.longitude and lang.latitude and
-                lang.id):
-            print(f'SKIP: Missing data for {lang.name}.', file=sys.stderr)
-            continue
-
-        d[lang.name] = Doculect(id=lang.id, name=lang.name, subfamily=lang.subfamily,
-                                iso_code=lang.iso_code, glotto_code=lang.glotto_code,
-                                longitude=lang.longitude, latitude=lang.latitude)
-        session.add(d[lang.name])
-
-    session.flush()
-
-    for key, source in sources.items():
-        if key[:3] in d:
-            session.add(common.LanguageSource(
-                language_pk=d[key[:3]].pk,
-                source_pk=source.pk))
-    session.flush()
-
-    return d
 
 
 def main(args):
-
+    colors = [
+        '0000dd', '009900', '990099', 'dd0000', 'ffff00', 'ffffff', '00ff00', 'ff6600', '00ffff']
+    icons = [s + c for s in ['c', 'd'] for c in colors]
     data = Data()
-    """
-    data.add(
-        common.Dataset,
-        tuled.__name__,
-        id=tuled.__name__,
-        domain='',
-
-        publisher_name="Tübingen University",
-        publisher_place="Tübingen",
-        publisher_url="",
-        license="http://creativecommons.org/licenses/by/4.0/",
-        jsondata={
-            'license_icon': 'cc-by.png',
-            'license_name': 'Creative Commons Attribution 4.0 International License'},
-
-    )
-    """
     add_meta_data(DBSession)
+    contrib = data.add(common.Contribution, 'tuled', id='tuled', name='tuled')
+    add_sources(args.cldf.bibpath, DBSession)
+    sources = {s.id: s.pk for s in DBSession.query(common.Source)}
+    subgroups = []
+    for row in args.cldf['LanguageTable']:
+        if row['SubGroup'] not in subgroups:
+            subgroups.append(row['SubGroup'])
+        data.add(
+            Doculect,
+            row['ID'],
+            id=row['ID'],
+            name=row['Name'].replace('_', ' '),
+            subfamily=row['SubGroup'],
+            iso_code=row['ISO639P3code'],
+            glotto_code=row['Glottocode'],
+            longitude=row['Longitude'],
+            latitude=row['Latitude'],
+            jsondata=dict(icon=icons[len(subgroups) - 1])
+        )
+    for row in args.cldf['ParameterTable']:
+        data.add(
+            Concept,
+            row['ID'],
+            id=row['ID'].split('_')[0],
+            name=row['Name'],
+            portuguese=row['Portuguese_Gloss'],
+            semantic_field=row['Semantic_Field'],
+            concepticon_class=row['Concepticon_ID'],
+            eol=row['EOL_ID'],
+        )
+    for (lid, pid), rows in itertools.groupby(
+        sorted(args.cldf['FormTable'], key=lambda r: (r['Language_ID'], r['Parameter_ID'])),
+        lambda r: (r['Language_ID'], r['Parameter_ID']),
+    ):
+        vsid = '{}-{}'.format(lid, pid)
+        vs = data.add(
+            common.ValueSet, vsid,
+            id=vsid,
+            language=data['Doculect'][lid],
+            parameter=data['Concept'][pid],
+            contribution=contrib,
+        )
+        refs = set()
+        for row in rows:
+            DBSession.add(Word(
+                id=row['ID'],
+                valueset=vs,
+                name=row['Form'],
+                tokens=' '.join(row['Segments']),
+                simple_cognate=int(row['SimpleCognate']),
+                notes=row['Comment'],
+                morphemes=' '.join(row['Morphemes']),
+                partial_cognate=int(row['PartialCognates'][0]) if row['PartialCognates'] else None,
+            ))
+            refs = refs.union(row['Source'])
 
-    data_dir = pathlib.Path(tuled.__file__).parent.parent / 'data'
-    args.main_data = input('main data [{}]: '.format(data_dir / 'main.tsv')) or str(data_dir / 'main.tsv')
-    args.sources_data = input('sources data [{}]: '.format(data_dir / 'sources.bib')) or str(data_dir / 'sources.bib')
-    args.concept_data = input('concept data [{}]: '.format(data_dir / 'concepts.tsv')) or str(data_dir / 'concepts.tsv')
-    args.lang_data = input('lang data [{}]: '.format(data_dir / 'languages.tsv')) or str(data_dir / 'languages.tsv')
+        for ref in refs:
+            DBSession.add(common.ValueSetReference(valueset=vs, source_pk=sources[slug(ref, lowercase=False)]))
 
-    main_dataset = MainDataset(args.main_data)
-
-    sources = add_sources(args.sources_data, DBSession)
-    concepts = add_concepts(ConceptDataset(args.concept_data), DBSession)
-    doculects = add_doculects(LangDataset(args.lang_data), DBSession, sources)
-
-    last_synset = None
-    for word in main_dataset.gen_words():
-
-        if word.language not in doculects or word.concept not in concepts:
-            continue
-
-        # assert word.concept in concepts
-        # assert word.language in doculects
-
-        if last_synset is None \
-                or last_synset.language != doculects[word.language] \
-                or last_synset.parameter != concepts[word.concept]:
-            last_synset = Synset(id=f'{word.language}-{word.concept}-{word.form}',
-                                 language=doculects[word.language],
-                                 parameter=concepts[word.concept])
-            DBSession.add(last_synset)
-
-        if not (word.form or word.simple_cognate):  # empty notes?
-            continue
-
-        DBSession.add(Word(id=f'{word.language}-{word.concept}-{word.form}-{word.portuguese}',
-                           valueset=last_synset,
-                           name=word.form,
-                           tokens=word.tokens,
-                           simple_cognate=word.simple_cognate,
-                           notes=word.notes,
-                           morphemes=word.morphemes,
-                           partial_cognate=word.partial_cognate)
-                           )
 
 def prime_cache(args):
     """If data needs to be denormalized for lookup, do that here.
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+    compute_language_sources()
