@@ -2,7 +2,7 @@
 ![TuLeD](mapNimu2.png)
 
 
-##Contributors 
+## Contributors 
 
 Name | GitHub user | Description | Role
 --- | --- | --- | ---
