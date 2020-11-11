@@ -321,8 +321,8 @@ def main(args):
                            name=word.form,
                            tokens=word.tokens,
                            simple_cognate=word.simple_cognate,
-                           notes=word.notes,
                            morphemes=word.morphemes,
+                           notes=word.notes,
                            partial_cognate=word.partial_cognate)
                            )
 
@@ -331,3 +331,4 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+

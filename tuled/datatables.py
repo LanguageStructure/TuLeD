@@ -211,8 +211,8 @@ class WordsDataTable(datatables.Values):
             Col(self, 'tokens', model_col=Word.tokens, sTitle='Tokens'),
             Col(self, 'simple_cognate', model_col=Word.simple_cognate, sTitle='Simple Cognate'),
             Col(self, 'partial_cognate', model_col=Word.partial_cognate, sTitle='Partial Cognate'),
-            Col(self, 'notes', model_col= Word.notes, sTitle='Notes'),
-            Col(self, 'morphemes', model_col=Word.morphemes, sTitle='Morphemes')]
+            Col(self, 'morphemes', model_col=Word.morphemes, sTitle='Morphemes'),
+            Col(self, 'notes', model_col=Word.notes, sTitle='Notes')]
         )
 
         return res
