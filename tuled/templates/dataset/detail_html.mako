@@ -54,7 +54,7 @@
         <h3>How to cite TuLeD Online</h3>
                 <p style="text-align:justify">
 
-            Fabrício Ferraz Gerardi, Stanislav Reichert, Tim Wientzek, Verena Blaschke, Eric de Mattos, Zhuge Gao, Nianheng wu. (2020). LanguageStructure/TuLeD: Pre-release (version 0.9). Tübingen: Eberhard-Karls University. <a href="https://zenodo.org/badge/latestdoi/263996134"><img src="https://zenodo.org/badge/263996134.svg" alt="DOI"></a>       
+            Fabrício Ferraz Gerardi, Stanislav Reichert, Carolina Aragon, Johann-Mattis List, & Tim Wientzek. (2020). CLDF dataset derived from Gerardi and Reichert's "TuLeD: Tupían lexical database" from 2020 (Version v0.10) [Data set]. Zenodo. Tübingen: Eberhard-Karls University. <a href="https://zenodo.org/badge/latestdoi/270269811"><img src="https://zenodo.org/badge/270269811.svg" alt="DOI"></a>       
              </p>  
     </div>
 
@@ -62,7 +62,7 @@
 
 </%def>
 
-<h2>Welcome to TuLeD (version 0.9)</h2>
+<h2>Welcome to TuLeD (pre-release v0.10)</h2>
 
 <p> <img src="/static/mapNimu2.png" alt=""> </p>
 <!--
@@ -70,16 +70,19 @@
     Abstract.
 </p>
 -->
+
 <p style="text-align:justify">
     TuLeD (Tupían Lexical Database) is being compiled within the <a href="https://uni-tuebingen.de/fakultaeten/philosophische-fakultaet/fachbereiche/neuphilologie/seminar-fuer-sprachwissenschaft/arbeitsbereiche/allg-sprachwissenschaft/projekte/crosslingference/"> CrossLingference </a> project. It is the first part of <a href="http://tular.org"> TuLaR </a> (Tupían language resources) to be published online. It offers a comprehensive
     list of concepts comprising both Swadesh and Tupían culturally relevant items for all branches of the language family. Semantic fields for the concepts are taken from <a "https://wold.clld.org"> The World Loanword Database (WOLD) </a>, and each concept is linked to a <a href="http://concepticon.clld.org"> Concepticon</a> id.
-    The data is presented in a unified encoding to be used in historical and computational linguistics working on language evolution and language contact. </p>
+    The data is presented in <a href="https://cldf.clld.org"> CLDF format</a> and the transcription follows the
+    <a href="https://cldf.clld.org"> CLTS</a>. The data is intended to be used in historical and computational linguistics working on language evolution and language contact. </p>
 
   <p>  
-    The current release version (0.9) includes 412 concepts across 76 languages, living and extinct, with a coverage ranging up to <a href="static/Completeness.html"> 97% </a> .
+    The current pre-release (v0.10) includes 416 concepts across 76 languages, living and extinct, with a coverage ranging up to <a href="static/Completeness.html"> 97%. </a> Cognacy assignent was first done automatically, and is now been improved through expert judgement.
     </p>
     
-  
+ <p> <center> <img src="/static/tupi1.png" stype="float:left" width="300"px height="300"px> </center> </p>
+ 
 
    <h3>Terms of use</h3>
    <p>
@@ -87,10 +90,7 @@
 The content of this web site is published under a Creative Commons Licence. We invite the community of users to think about further applications for the available data and look forward to your comments, feedback and questions.
     </p>
 
-  
-    
-  
-    
+ 
    <h3>Acknowledgements</h3>
    
    <p>
@@ -98,13 +98,4 @@ The content of this web site is published under a Creative Commons Licence. We i
     programme (Grant agreement No. 834050).
     </p>
     
-     <div class="well">
-        <h3 style="color:red">Important</h3>
-        <p>
-           This is a pre-release version which contains errors. The TuLeD team is working on all aspects of the database to improve it and allow for the first official release.
-        </p>  
-        
-        
-        
-        
-    </div>
+     
