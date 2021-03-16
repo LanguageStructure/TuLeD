@@ -56,9 +56,9 @@ class LangDataset:
         with open(self.dataset_fp, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f, dialect=self.LangDatasetDialect)
             for row in reader:
-                yield self.Language(row['Language'], row['Sub-Family'],
-                                    row['ISO_Code'], row['Language_ID'],
-                                    row['Glottolog'], row['Longitude'],
+                yield self.Language(row['Doculect'], row['SubGroup'],
+                                    row['ISO639P3code'], row['Language_ID'],
+                                    row['Glottocode'], row['Longitude'],
                                     row['Latitude'])
 
 
@@ -331,4 +331,3 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
-
